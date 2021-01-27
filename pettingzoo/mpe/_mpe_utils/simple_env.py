@@ -1,9 +1,9 @@
 from gym import spaces
 import numpy as np
-from pettingzoo import AECEnv
-from pettingzoo.utils.agent_selector import agent_selector
+from PettingZoo.pettingzoo import AECEnv
+from PettingZoo.pettingzoo.utils.agent_selector import agent_selector
 from gym.utils import seeding
-from pettingzoo.utils import wrappers
+from PettingZoo.pettingzoo.utils import wrappers
 
 
 def make_env(raw_env):
@@ -65,6 +65,9 @@ class SimpleEnv(AECEnv):
 
     def reset(self):
         self.scenario.reset_world(self.world, self.np_random)
+
+        if self.viewer is not None:
+            self.viewer.max_size = 1
 
         self.agents = self.possible_agents[:]
         self.rewards = {name: 0. for name in self.agents}

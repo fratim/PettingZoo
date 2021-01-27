@@ -1,7 +1,7 @@
-from pettingzoo.utils.env import AECEnv
-from pettingzoo.utils._parallel_env import _parallel_env_wrapper
-from pettingzoo.utils.wrappers import OrderEnforcingWrapper
-from pettingzoo.utils.env import ParallelEnv
+from PettingZoo.pettingzoo.utils.env import AECEnv
+from PettingZoo.pettingzoo.utils._parallel_env import _parallel_env_wrapper
+from PettingZoo.pettingzoo.utils.wrappers import OrderEnforcingWrapper
+from PettingZoo.pettingzoo.utils.env import ParallelEnv
 
 
 class to_parallel(ParallelEnv):

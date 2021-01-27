@@ -1,4 +1,4 @@
-from pettingzoo.utils.error import DeprecatedEnv
+from PettingZoo.pettingzoo.utils.error import DeprecatedEnv
 
 
 class DepreciatedModule:

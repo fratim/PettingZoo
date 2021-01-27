@@ -1,4 +1,4 @@
-from pettingzoo.utils.depreciated_module import DepreciatedModule
+from PettingZoo.pettingzoo.utils.depreciated_module import DepreciatedModule
 
 simple_adversary_v0 = DepreciatedModule("simple_adversary", "v0", "v2")
 simple_adversary_v1 = DepreciatedModule("simple_adversary", "v1", "v2")

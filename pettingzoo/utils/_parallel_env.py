@@ -1,5 +1,5 @@
-from pettingzoo.utils import agent_selector
-from pettingzoo import AECEnv
+from PettingZoo.pettingzoo.utils import agent_selector
+from PettingZoo.pettingzoo import AECEnv
 import copy
 
 
