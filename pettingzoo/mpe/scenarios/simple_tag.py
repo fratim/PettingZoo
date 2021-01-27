@@ -4,26 +4,49 @@ from .._mpe_utils.scenario import BaseScenario
 
 
 class Scenario(BaseScenario):
-    def make_world(self, num_good=1, num_adversaries=3, num_obstacles=2):
+    def make_world(self, num_good=1, num_adversaries=3, num_obstacles=2, num_neutral=2):
         world = World()
         # set any world properties first
         world.dim_c = 2
         num_good_agents = num_good
         num_adversaries = num_adversaries
-        num_agents = num_adversaries + num_good_agents
+        num_neutral = num_neutral
+        num_agents = num_adversaries + num_good_agents + num_neutral
         num_landmarks = num_obstacles
         # add agents
         world.agents = [Agent() for i in range(num_agents)]
         for i, agent in enumerate(world.agents):
             agent.adversary = True if i < num_adversaries else False
-            base_name = "adversary" if agent.adversary else "agent"
-            base_index = i if i < num_adversaries else i - num_adversaries
+            agent.good = True if num_adversaries <= i < (num_adversaries + num_good) else False
+            agent.neutral = True if (num_adversaries + num_good) <= i else False
+
+            if agent.adversary:
+                base_name = "adversary"
+                base_index = i
+                agent.size = 0.075
+                agent.accel = 3.0
+                agent.max_speed = 1.0
+            elif agent.good:
+                base_name = "good"
+                base_index = i - num_adversaries
+                agent.size = 0.05
+                agent.accel = 4.0
+                agent.max_speed = 1.3
+            elif agent.neutral:
+                base_name = "neutral"
+                base_index = i - num_adversaries - num_good
+                agent.size = 0.075
+                agent.accel = 4.0
+                agent.max_speed = 1.3
+            else:
+                raise ValueError("Unknown Agent")
+
+
             agent.name = '{}_{}'.format(base_name, base_index)
+
             agent.collide = True
             agent.silent = True
-            agent.size = 0.075 if agent.adversary else 0.05
-            agent.accel = 3.0 if agent.adversary else 4.0
-            agent.max_speed = 1.0 if agent.adversary else 1.3
+
         # add landmarks
         world.landmarks = [Landmark() for i in range(num_landmarks)]
         for i, landmark in enumerate(world.landmarks):
@@ -37,7 +60,13 @@ class Scenario(BaseScenario):
     def reset_world(self, world, np_random):
         # random properties for agents
         for i, agent in enumerate(world.agents):
-            agent.color = np.array([0.35, 0.85, 0.35]) if not agent.adversary else np.array([0.85, 0.35, 0.35])
+            if agent.adversary:
+                agent.color = np.array([0.85, 0.35, 0.35])
+            elif agent.good:
+                agent.color = np.array([0.35, 0.85, 0.35])
+            elif agent.neutral:
+                agent.color = np.array([0.35, 0.35, 0.85])
+
             # random properties for landmarks
         for i, landmark in enumerate(world.landmarks):
             landmark.color = np.array([0.25, 0.25, 0.25])
@@ -51,16 +80,16 @@ class Scenario(BaseScenario):
                 landmark.state.p_pos = np_random.uniform(-0.9, +0.9, world.dim_p)
                 landmark.state.p_vel = np.zeros(world.dim_p)
 
-    def benchmark_data(self, agent, world):
-        # returns data for benchmarking purposes
-        if agent.adversary:
-            collisions = 0
-            for a in self.good_agents(world):
-                if self.is_collision(a, agent):
-                    collisions += 1
-            return collisions
-        else:
-            return 0
+    # def benchmark_data(self, agent, world):
+    #     # returns data for benchmarking purposes
+    #     if agent.adversary:
+    #         collisions = 0
+    #         for a in self.good_agents(world):
+    #             if self.is_collision(a, agent):
+    #                 collisions += 1
+    #         return collisions
+    #     else:
+    #         return 0
 
     def is_collision(self, agent1, agent2):
         delta_pos = agent1.state.p_pos - agent2.state.p_pos
@@ -70,7 +99,7 @@ class Scenario(BaseScenario):
 
     # return all agents that are not adversaries
     def good_agents(self, world):
-        return [agent for agent in world.agents if not agent.adversary]
+        return [agent for agent in world.agents if (not agent.adversary and not agent.neutral)]
 
     # return all adversarial agents
     def adversaries(self, world):
@@ -78,7 +107,13 @@ class Scenario(BaseScenario):
 
     def reward(self, agent, world):
         # Agents are rewarded based on minimum agent distance to each landmark
-        main_reward = self.adversary_reward(agent, world) if agent.adversary else self.agent_reward(agent, world)
+        if agent.adversary:
+            main_reward = self.adversary_reward(agent, world)
+        elif agent.good:
+            main_reward = self.agent_reward(agent, world)
+        elif agent.neutral:
+            main_reward = 0
+
         return main_reward
 
     def agent_reward(self, agent, world):
