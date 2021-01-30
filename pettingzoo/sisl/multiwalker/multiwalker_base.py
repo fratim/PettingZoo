@@ -474,7 +474,7 @@ class MultiWalkerEnv():
             global_reward = rewards.mean()
             local_reward = rewards * self.local_ratio
             self.last_rewards = global_reward * (1. - self.local_ratio) + local_reward * self.local_ratio
-            self.last_dones = done
+            self.last_dones = list(done)
             self.frames = self.frames + 1
 
     def get_last_rewards(self):

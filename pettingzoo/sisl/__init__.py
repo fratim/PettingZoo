@@ -1,4 +1,4 @@
-from pettingzoo.utils.depreciated_module import DepreciatedModule
+from PettingZoo.pettingzoo.utils.depreciated_module import DepreciatedModule
 
 multiwalker_v0 = DepreciatedModule("multiwalker", "v0", "v6")
 multiwalker_v1 = DepreciatedModule("multiwalker", "v1", "v6")

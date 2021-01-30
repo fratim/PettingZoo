@@ -1,10 +1,10 @@
 from .multiwalker_base import MultiWalkerEnv as _env
-from pettingzoo import AECEnv
-from pettingzoo.utils import agent_selector
+from PettingZoo.pettingzoo import AECEnv
+from PettingZoo.pettingzoo.utils import agent_selector
 import numpy as np
 from gym.utils import EzPickle
-from pettingzoo.utils import wrappers
-from pettingzoo.utils.to_parallel import parallel_wrapper_fn
+from PettingZoo.pettingzoo.utils import wrappers
+from PettingZoo.pettingzoo.utils.to_parallel import parallel_wrapper_fn
 
 
 def env(**kwargs):
