@@ -4,9 +4,12 @@ from PettingZoo.pettingzoo.utils.to_parallel import parallel_wrapper_fn
 
 
 class raw_env(SimpleEnv):
-    def __init__(self, num_good=1, num_adversaries=3, num_obstacles=2, max_cycles=25):
+    def __init__(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2, max_cycles=25):
         scenario = Scenario()
-        world = scenario.make_world(num_good, num_adversaries, num_obstacles)
+        world = scenario.make_world(num_adversaries=num_adversaries,
+                                    num_good=num_good,
+                                    num_neutral=num_neutral,
+                                    num_obstacles=num_obstacles)
         super().__init__(scenario, world, max_cycles)
 
 

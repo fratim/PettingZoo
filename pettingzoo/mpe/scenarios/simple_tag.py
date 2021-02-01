@@ -4,7 +4,7 @@ from .._mpe_utils.scenario import BaseScenario
 
 
 class Scenario(BaseScenario):
-    def make_world(self, num_good=1, num_adversaries=3, num_obstacles=2, num_neutral=2):
+    def make_world(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2):
         world = World()
         # set any world properties first
         world.dim_c = 2
