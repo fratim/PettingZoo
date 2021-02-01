@@ -4,7 +4,7 @@ from .._mpe_utils.scenario import BaseScenario
 
 
 class Scenario(BaseScenario):
-    def make_world(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2):
+    def make_world(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2, speed_goods = 1.3):
         world = World()
         # set any world properties first
         world.dim_c = 2
@@ -31,7 +31,7 @@ class Scenario(BaseScenario):
                 base_index = i - num_adversaries
                 agent.size = 0.05
                 agent.accel = 4.0
-                agent.max_speed = 1.3
+                agent.max_speed = speed_goods
             elif agent.neutral:
                 base_name = "neutral"
                 base_index = i - num_adversaries - num_good
