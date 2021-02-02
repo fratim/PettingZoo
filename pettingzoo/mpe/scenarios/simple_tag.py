@@ -4,8 +4,10 @@ from .._mpe_utils.scenario import BaseScenario
 
 
 class Scenario(BaseScenario):
-    def make_world(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2, speed_goods = 1.3):
+    def make_world(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2, speed_goods=1.3, obs_adv_speeds=True):
         world = World()
+
+        world.obs_adversary_speeds = obs_adv_speeds
         # set any world properties first
         world.dim_c = 2
         num_good_agents = num_good
@@ -87,17 +89,6 @@ class Scenario(BaseScenario):
             if not landmark.boundary:
                 landmark.state.p_pos = np_random.uniform(-0.9, +0.9, world.dim_p)
                 landmark.state.p_vel = np.zeros(world.dim_p)
-
-    # def benchmark_data(self, agent, world):
-    #     # returns data for benchmarking purposes
-    #     if agent.adversary:
-    #         collisions = 0
-    #         for a in self.good_agents(world):
-    #             if self.is_collision(a, agent):
-    #                 collisions += 1
-    #         return collisions
-    #     else:
-    #         return 0
 
     def is_collision(self, agent1, agent2):
         delta_pos = agent1.state.p_pos - agent2.state.p_pos
@@ -181,5 +172,6 @@ class Scenario(BaseScenario):
                 continue
             comm.append(other.state.c)
             other_pos.append(other.state.p_pos - agent.state.p_pos)
-            other_vel.append(other.state.p_vel)
+            if not other.adversary or world.obs_adversary_speeds:
+                other_vel.append(other.state.p_vel)
         return np.concatenate([agent.state.p_vel] + [agent.state.p_pos] + entity_pos + other_pos + other_vel)
