@@ -48,7 +48,7 @@ class Scenario(BaseScenario):
             elif agent.neutral:
                 base_name = "neutral"
                 base_index = i - num_adversaries - num_good
-                agent.size = 0.15
+                agent.size = 0.1
                 agent.accel = 4.0 * abilities_neutrals
                 agent.max_speed = 1.3 * abilities_neutrals
             else:
@@ -94,23 +94,23 @@ class Scenario(BaseScenario):
         # set random initial states
 
 
+        circle = True
+        good_position = np_random.uniform(-0.7, 0.7, 2)
+        neutral_positions = [np.array((0, np.sqrt(2))), np.array((1, -1)), np.array((-1, -1))]
+        neutrals_spawned = 0
 
 
         for agent in world.agents:
 
-            circle = True
-            good_position = np_random.uniform(-0.7, 0.7, 2)
-            neutral_positions = [np.array((0, np.sqrt(2))), np.array((1, -1)), np.array((-1, -1))]
-            neutrals_spawned = 0
-
             if self.simple_spawn:
+
                 if agent.adversary:
                     agent.state.p_pos = np_random.uniform(-1, 1, 2)
                 elif agent.good:
                     agent.state.p_pos = good_position
                 elif agent.neutral:
                     if circle:
-                        pos = good_position + np_random.uniform(-0.02, 0.02, 2) + neutral_positions[neutrals_spawned]*0.2
+                        pos = good_position + np_random.uniform(-0.02, 0.02, 2) + neutral_positions[neutrals_spawned]*0.15
                     else:
                         pos = np_random.uniform(-1, 1, 2)
                     agent.state.p_pos = pos
