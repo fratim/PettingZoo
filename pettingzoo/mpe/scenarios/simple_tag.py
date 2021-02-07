@@ -48,7 +48,7 @@ class Scenario(BaseScenario):
             elif agent.neutral:
                 base_name = "neutral"
                 base_index = i - num_adversaries - num_good
-                agent.size = 0.075
+                agent.size = 0.15
                 agent.accel = 4.0 * abilities_neutrals
                 agent.max_speed = 1.3 * abilities_neutrals
             else:
@@ -92,14 +92,29 @@ class Scenario(BaseScenario):
         for i, landmark in enumerate(world.landmarks):
             landmark.color = np.array([0.25, 0.25, 0.25])
         # set random initial states
+
+
+
+
         for agent in world.agents:
+
+            circle = True
+            good_position = np_random.uniform(-0.7, 0.7, 2)
+            neutral_positions = [np.array((0, np.sqrt(2))), np.array((1, -1)), np.array((-1, -1))]
+            neutrals_spawned = 0
+
             if self.simple_spawn:
                 if agent.adversary:
-                    agent.state.p_pos = np.array((0.67, np_random.uniform(-0.75, 0.75, 1)[0]))
+                    agent.state.p_pos = np_random.uniform(-1, 1, 2)
                 elif agent.good:
-                    agent.state.p_pos = np.array((-0.67, np_random.uniform(-0.25, 0.25, 1)[0]))
+                    agent.state.p_pos = good_position
                 elif agent.neutral:
-                    agent.state.p_pos = np.array((0, np_random.uniform(-0.5, 0.5, 1)[0]))
+                    if circle:
+                        pos = good_position + np_random.uniform(-0.02, 0.02, 2) + neutral_positions[neutrals_spawned]*0.2
+                    else:
+                        pos = np_random.uniform(-1, 1, 2)
+                    agent.state.p_pos = pos
+                    neutrals_spawned += 1
             else:
                 agent.state.p_pos = np_random.uniform(-1, +1, world.dim_p)
 
