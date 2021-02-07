@@ -4,7 +4,15 @@ from .._mpe_utils.scenario import BaseScenario
 
 
 class Scenario(BaseScenario):
-    def make_world(self, num_adversaries=3, num_good=1, num_neutral=2, num_obstacles=2, speed_goods=1.3, obs_adv_speeds=True):
+    def make_world(self,
+                   num_adversaries=3,
+                   num_good=1,
+                   num_neutral=2,
+                   num_obstacles=2,
+                   abilities_goods=1,
+                   abilities_adversaries=1,
+                   abilities_neutrals=1,
+                   obs_adv_speeds=True):
         world = World()
 
         world.obs_adversary_speeds = obs_adv_speeds
@@ -26,20 +34,20 @@ class Scenario(BaseScenario):
                 base_name = "adversary"
                 base_index = i
                 agent.size = 0.075
-                agent.accel = 3.0
-                agent.max_speed = 1.0
+                agent.accel = 3.0 * abilities_adversaries
+                agent.max_speed = 1.0 * abilities_adversaries
             elif agent.good:
                 base_name = "good"
                 base_index = i - num_adversaries
                 agent.size = 0.05
-                agent.accel = 4.0
-                agent.max_speed = speed_goods
+                agent.accel = 4.0 * abilities_goods
+                agent.max_speed = 1.3 * abilities_goods
             elif agent.neutral:
                 base_name = "neutral"
                 base_index = i - num_adversaries - num_good
                 agent.size = 0.075
-                agent.accel = 4.0
-                agent.max_speed = 1.3
+                agent.accel = 4.0 * abilities_neutrals
+                agent.max_speed = 1.3 * abilities_neutrals
             else:
                 raise ValueError("Unknown Agent")
 
@@ -169,6 +177,8 @@ class Scenario(BaseScenario):
         other_vel = []
         for other in world.agents:
             if other is agent:
+                continue
+            if other.neutral and not agent.neutral: # only friendly agent can observe friendly agents
                 continue
             comm.append(other.state.c)
             other_pos.append(other.state.p_pos - agent.state.p_pos)
