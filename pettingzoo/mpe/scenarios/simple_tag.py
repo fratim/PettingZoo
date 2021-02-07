@@ -12,8 +12,11 @@ class Scenario(BaseScenario):
                    abilities_goods=1,
                    abilities_adversaries=1,
                    abilities_neutrals=1,
+                   simple_spawn=0,
                    obs_adv_speeds=True):
         world = World()
+
+        self.simple_spawn = simple_spawn
 
         world.obs_adversary_speeds = obs_adv_speeds
         # set any world properties first
@@ -90,7 +93,16 @@ class Scenario(BaseScenario):
             landmark.color = np.array([0.25, 0.25, 0.25])
         # set random initial states
         for agent in world.agents:
-            agent.state.p_pos = np_random.uniform(-1, +1, world.dim_p)
+            if self.simple_spawn:
+                if agent.adversary:
+                    agent.state.p_pos = np.array((0.67, np_random.uniform(-0.75, 0.75, 1)[0]))
+                elif agent.good:
+                    agent.state.p_pos = np.array((-0.67, np_random.uniform(-0.25, 0.25, 1)[0]))
+                elif agent.neutral:
+                    agent.state.p_pos = np.array((0, np_random.uniform(-0.5, 0.5, 1)[0]))
+            else:
+                agent.state.p_pos = np_random.uniform(-1, +1, world.dim_p)
+
             agent.state.p_vel = np.zeros(world.dim_p)
             agent.state.c = np.zeros(world.dim_c)
         for i, landmark in enumerate(world.landmarks):
