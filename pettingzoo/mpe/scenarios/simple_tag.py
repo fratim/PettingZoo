@@ -13,10 +13,12 @@ class Scenario(BaseScenario):
                    abilities_adversaries=1,
                    abilities_neutrals=1,
                    simple_spawn=0,
+                   friendly_cage=0,
                    obs_adv_speeds=True):
         world = World()
 
         self.simple_spawn = simple_spawn
+        self.friendly_cage = friendly_cage
 
         world.obs_adversary_speeds = obs_adv_speeds
         # set any world properties first
@@ -146,9 +148,18 @@ class Scenario(BaseScenario):
         elif agent.good:
             main_reward = self.agent_reward(agent, world)
         elif agent.neutral:
-            main_reward = 0
+            main_reward = self.neutral_reward(agent, world)
 
         return main_reward
+
+    # agents are penalized for exiting the screen, so that they can be caught by the adversaries
+    @staticmethod
+    def bound(x):
+        if x < 0.9:
+            return 0
+        if x < 1.0:
+            return (x - 0.9) * 10
+        return min(np.exp(2 * x - 2), 10)
 
     def agent_reward(self, agent, world):
         # Agents are negatively rewarded if caught by adversaries
@@ -163,18 +174,22 @@ class Scenario(BaseScenario):
                 if self.is_collision(a, agent):
                     rew -= 10
 
-        # agents are penalized for exiting the screen, so that they can be caught by the adversaries
-        def bound(x):
-            if x < 0.9:
-                return 0
-            if x < 1.0:
-                return (x - 0.9) * 10
-            return min(np.exp(2 * x - 2), 10)
         for p in range(world.dim_p):
             x = abs(agent.state.p_pos[p])
-            rew -= bound(x)
-
+            rew -= self.bound(x)
         return rew
+
+    def neutral_reward(self, agent, world):
+
+        if not self.friendly_cage:
+            return 0
+
+        rew = 0
+        for p in range(world.dim_p):
+            x = abs(agent.state.p_pos[p])
+            rew -= self.bound(x)
+        return rew
+
 
     def adversary_reward(self, agent, world):
         # Adversaries are rewarded for collisions with agents

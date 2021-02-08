@@ -14,6 +14,7 @@ class raw_env(SimpleEnv):
                  abilities_adversaries=1,
                  abilities_neutrals=1,
                  simple_spawn = 0,
+                 friendly_cage=0,
                  obs_vadv=True):
         scenario = Scenario()
         world = scenario.make_world(num_adversaries=num_adversaries,
@@ -24,6 +25,7 @@ class raw_env(SimpleEnv):
                                     abilities_adversaries=abilities_adversaries,
                                     abilities_neutrals=abilities_neutrals,
                                     simple_spawn=simple_spawn,
+                                    friendly_cage=friendly_cage,
                                     obs_adv_speeds=obs_vadv)
         super().__init__(scenario, world, max_cycles)
 
