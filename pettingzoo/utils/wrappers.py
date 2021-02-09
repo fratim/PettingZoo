@@ -43,8 +43,8 @@ class BaseWrapper(AECEnv):
     def close(self):
         self.env.close()
 
-    def render(self, mode='human'):
-        return self.env.render(mode)
+    def render(self, mode='human', printmessage=""):
+        return self.env.render(mode, printmessage)
 
     def reset(self):
         self.env.reset()
@@ -196,12 +196,12 @@ class OrderEnforcingWrapper(BaseWrapper):
         self._has_reset = False
         super().seed(seed)
 
-    def render(self, mode='human'):
+    def render(self, mode='human', printmessage=""):
         if not self._has_reset:
             EnvLogger.error_render_before_reset()
         assert mode in self.metadata['render.modes']
         self._has_rendered = True
-        return super().render(mode)
+        return super().render(mode, printmessage)
 
     def close(self):
         super().close()

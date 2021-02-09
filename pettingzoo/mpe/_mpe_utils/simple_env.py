@@ -167,7 +167,7 @@ class SimpleEnv(AECEnv):
         self._accumulate_rewards()
         self._dones_step_first()
 
-    def render(self, mode='human'):
+    def render(self, mode='human', printmessage=""):
         from . import rendering
 
         if self.viewer is None:
@@ -204,6 +204,9 @@ class SimpleEnv(AECEnv):
                     self.viewer.text_lines.append(tline)
                     idx += 1
 
+            # add message textline
+            self.viewer.text_lines.append(rendering.TextLine(self.viewer.window, idx))
+
         alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
         # for agent in self.world.agents:
         idx = 0
@@ -219,6 +222,9 @@ class SimpleEnv(AECEnv):
 
             self.viewer.text_lines[idx].set_text(message)
             idx += 1
+
+        # print passed message
+        self.viewer.text_lines[-1].set_text(printmessage)
 
         # update bounds to center around agent
         all_poses = [entity.state.p_pos for entity in self.world.entities]
