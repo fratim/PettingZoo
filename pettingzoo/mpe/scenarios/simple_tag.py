@@ -97,22 +97,24 @@ class Scenario(BaseScenario):
 
 
         circle = True
-        good_position = np_random.uniform(-0.7, 0.7, 2)
+        good_position = np_random.uniform(-0.5, 0.5, 2)
         neutral_positions = [np.array((0, np.sqrt(2))), np.array((1, -1)), np.array((-1, -1))]
         neutrals_spawned = 0
 
 
         for agent in world.agents:
 
-            if self.simple_spawn:
+            if self.simple_spawn != 0:
 
                 if agent.adversary:
-                    agent.state.p_pos = np_random.uniform(-1, 1, 2)
+                    angle = np_random.uniform(0, 2*3.1415, 1)
+                    r = np_random.uniform(0.7, 1.3, 1)
+                    agent.state.p_pos = np.array([r[0]*np.cos(angle)[0], r[0]*np.sin(angle)[0]])
                 elif agent.good:
                     agent.state.p_pos = good_position
                 elif agent.neutral:
                     if circle:
-                        pos = good_position + np_random.uniform(-0.02, 0.02, 2) + neutral_positions[neutrals_spawned]*0.15
+                        pos = good_position + np_random.uniform(-0.02, 0.02, 2) + neutral_positions[neutrals_spawned]*0.15*self.simple_spawn
                     else:
                         pos = np_random.uniform(-1, 1, 2)
                     agent.state.p_pos = pos
