@@ -30,6 +30,9 @@ class Scenario(BaseScenario):
         num_landmarks = num_obstacles
         # add agents
         world.agents = [Agent() for i in range(num_agents)]
+
+        n_adversaries = 0
+
         for i, agent in enumerate(world.agents):
             agent.adversary = True if i < num_adversaries else False
             agent.good = True if num_adversaries <= i < (num_adversaries + num_good) else False
@@ -39,8 +42,15 @@ class Scenario(BaseScenario):
                 base_name = "adversary"
                 base_index = i
                 agent.size = 0.075
-                agent.accel = 3.0 * abilities_adversaries
-                agent.max_speed = 1.0 * abilities_adversaries
+                if n_adversaries > 0:
+                    agent.accel = 3.0 * abilities_adversaries * 0.2
+                    agent.max_speed = 1.0 * abilities_adversaries * 0.2
+                else:
+                    agent.accel = 3.0 * abilities_adversaries
+                    agent.max_speed = 1.0 * abilities_adversaries
+
+                n_adversaries += 1
+
             elif agent.good:
                 base_name = "good"
                 base_index = i - num_adversaries
